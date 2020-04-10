@@ -23,3 +23,4 @@ A web crawler with email crawler
     - t: 'number': set the maximum of links that the script will crawl
     - r: randomize the choices of links that script will crawl
     - host: the url of host that you want to start the crawling (need to start with: 'http://' or 'https://')
+    - c: some websites needs cookie to be acessed, you can set cookies up with -c 'imcokie=imcookievalue; imanothercookie=imanothervalue;'
