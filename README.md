@@ -9,11 +9,11 @@ A web crawler with email crawler
     
   you can use:
     
-  ``` python full_crawler.py {-h} {-v} {-t TIME} {-r} host ```
+  ``` python full_crawler.py {-h} {-v} {-t TIME} {-r} {-l} {-c COOKIE} {-l} host ```
   
   or:
   
-  ``` ./full_crawler.py {-h} {-v} {-t TIME} {-r} host ```
+  ``` ./full_crawler.py {-h} {-v} {-t TIME} {-r} {-l} {-c COOKIE} {-l} host ```
   
     
   where:
