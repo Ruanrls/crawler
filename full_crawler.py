@@ -16,6 +16,7 @@ parser.add_argument("host", help="Host to makes a scan", action="store")
 parser.add_argument('-v', '--verbose', help="Increase the verbosity", action='store_true', default=False)
 parser.add_argument('-t', '--time', help="Defines the quantity of times that program will crawl (default 15)", type=int, default=15)
 parser.add_argument('-r', '--randomize', help='Randomize the links to crawl', action='store_true')
+parser.add_argument('-c', '--cookie', help="Add a cookie to the header", type=str, dest='cookie')
 
 arg = parser.parse_args()
 
@@ -30,8 +31,11 @@ email = set()
 header = {
     'user-agent':'Mozilla/5.0 (windows NT 10.0; win64; x64) AppleWebkit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 safari/537.36',
     'accept':'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-    'connection':'keep-alive'
+    'connection':'keep-alive',
 }
+
+if arg.cookie:
+    header['cookie'] = arg.cookie
 
 expressions = [r'href=[\"\'](https?://[\w]+\.[\w\.-_]+\.\w+[\.?\w+]?)[\'\"]', r'[\w\.-_]+@[\w\.-_]+\.com', r'[\w\.-_]+@[\w\.-_]+\.org']
 
@@ -70,6 +74,9 @@ def crawler(link):
     to_crawl.remove(link)#then we remove it
 
 print "Crawling... "
+if 'cookie' in header:
+    print "With cookies: " + header['cookie']
+
 for each in range(arg.time):
     if len(to_crawl) < 1:
         if arg.verbose:
