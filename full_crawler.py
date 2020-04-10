@@ -27,6 +27,12 @@ to_crawl.append(arg.host)
 crawled = set()
 email = set()
 
+header = {
+    'user-agent':'Mozilla/5.0 (windows NT 10.0; win64; x64) AppleWebkit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 safari/537.36',
+    'accept':'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+    'connection':'keep-alive'
+}
+
 expressions = [r'href=[\"\'](https?://[\w]+\.[\w\.-_]+\.\w+[\.?\w+]?)[\'\"]', r'[\w\.-_]+@[\w\.-_]+\.com', r'[\w\.-_]+@[\w\.-_]+\.org']
 
 ##############    FUNCS    ##############
@@ -37,7 +43,7 @@ def crawler(link):
     global crawled
 
     try:
-        ans = requests.get(link)
+        ans = requests.get(link, headers=header)
     except Exception as error:
         to_crawl.remove(link)
         if arg.verbose:
