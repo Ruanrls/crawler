@@ -17,14 +17,15 @@ parser.add_argument('-v', '--verbose', help="Increase the verbosity", action='st
 parser.add_argument('-t', '--time', help="Defines the quantity of times that program will crawl (default 15)", type=int, default=15)
 parser.add_argument('-r', '--randomize', help='Randomize the links to crawl', action='store_true')
 parser.add_argument('-c', '--cookie', help="Add a cookie to the header", type=str, dest='cookie')
+parser.add_argument('-l', '--local', help="Improves scan to local links too", action='store_true')
 
 arg = parser.parse_args()
 
 ##############    VARS    ##############
 
+host = arg.host
 to_crawl = []
-to_crawl.append(arg.host)
-
+to_crawl.append(host)
 crawled = set()
 email = set()
 
@@ -39,12 +40,16 @@ if arg.cookie:
 
 expressions = [r'href=[\"\'](https?://[\w]+\.[\w\.-_]+\.\w+[\.?\w+]?)[\'\"]', r'[\w\.-_]+@[\w\.-_]+\.com', r'[\w\.-_]+@[\w\.-_]+\.org']
 
+if arg.local:
+    expressions.append(r'href=[\'\"]([\w/][/?\w\.?-_/]+\w[^css][^ico][^png][\'\"])')
+
 ##############    FUNCS    ##############
 
 def crawler(link):
     global expressions
     global to_crawl
     global crawled
+    global host
 
     try:
         ans = requests.get(link, headers=header)
@@ -58,7 +63,12 @@ def crawler(link):
     for each in expressions:#for each re
         finded = re.findall(each, html)#find all
         for ordene in finded:#for each result finded ordene in your respective list
-            if '@' in ordene:
+            if len(expressions) > 3 and each == expressions[3]:
+                if arg.verbose:
+                        print "Link found: " + host + ordene
+                if ordene not in to_crawl and ordene not in crawled:
+                    to_crawl.append(host+ordene)
+            elif '@' in ordene:
                 email.add(ordene)
                 if arg.verbose:
                     print "Email found: " + ordene
@@ -67,8 +77,6 @@ def crawler(link):
                     print "Link found: " + ordene
                 if ordene not in to_crawl and ordene not in crawled:
                     to_crawl.append(ordene)
-                    if arg.verbose:
-                        print "The link is not crawled yet, adding: " + ordene
 
     crawled.add(link)#this link are crawled
     to_crawl.remove(link)#then we remove it
